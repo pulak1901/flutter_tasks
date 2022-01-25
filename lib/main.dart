@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tasks/data/todo.dart';
+import 'package:flutter_tasks/data/todo_db.dart';
+import 'package:flutter_tasks/data/todo_list_model.dart';
 import 'package:flutter_tasks/pages/history_page.dart';
 import 'package:flutter_tasks/pages/todo_page.dart';
 import 'package:flutter_tasks/widgets/custom_bottom_nav.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  TodoDatabase db = TodoDatabase();
+  TodoListModel model = TodoListModel(db: db);
+
+  runApp(MyApp(model: model));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key, required this.model}) : super(key: key);
+  final TodoListModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +27,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ChangeNotifierProvider.value(
+        value: model,
+        builder: (context, _) => MyHomePage(),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -33,6 +44,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _page = 0;
+  late HistoryPage historyPage = HistoryPage();
+  late TodoPage todoPage;
+  late TodoListModel _model;
+
+  @override
+  void initState() {
+    super.initState();
+    todoPage = TodoPage(
+      complete: _completeTodo,
+      swap: _swapTodo,
+    );
+  }
 
   _pageSelected(int _index) {
     setState(() {
@@ -42,18 +65,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _getPage(int _index) {
     if (_page == 1) {
-      return HistoryPage();
+      return historyPage;
     } else {
-      return TodoPage();
+      return todoPage;
     }
+  }
+
+  _completeTodo(Todo todo) {
+    _model.complete(todo.id);
+  }
+
+  _swapTodo(int oldIndex, int newIndex) {
+    _model.swap(oldIndex, newIndex);
   }
 
   @override
   Widget build(BuildContext context) {
+    _model = Provider.of<TodoListModel>(context, listen: true);
     return Scaffold(
         body: SafeArea(child: _getPage(_page)),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {},
+          onPressed: () => {_model.add("description", 0)},
           tooltip: 'Add todo',
           child: const Icon(Icons.add),
         ),
