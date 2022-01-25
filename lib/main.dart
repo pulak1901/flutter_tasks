@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tasks/pages/history_page.dart';
+import 'package:flutter_tasks/pages/todo_page.dart';
+import 'package:flutter_tasks/widgets/custom_bottom_nav.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,39 +32,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _page = 0;
 
-  void _incrementCounter() {
+  _pageSelected(int _index) {
     setState(() {
-      _counter++;
+      _page = _index;
     });
+  }
+
+  _getPage(int _index) {
+    if (_page == 1) {
+      return HistoryPage();
+    } else {
+      return TodoPage();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        body: SafeArea(child: _getPage(_page)),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => {},
+          tooltip: 'Add todo',
+          child: const Icon(Icons.add),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: CustomBottomNav(
+          color: Colors.black,
+          selectedColor: Colors.blue,
+          iconSize: 28.0,
+          height: 64.0,
+          fabLabel: "Add",
+          items: [
+            CustomNavItem(icon: Icons.list, label: "Todo"),
+            CustomNavItem(icon: Icons.stacked_line_chart, label: "History")
+          ],
+          onTabSelected: (index) => {_pageSelected(index)},
+        ));
   }
 }
