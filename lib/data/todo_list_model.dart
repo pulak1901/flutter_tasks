@@ -15,19 +15,24 @@ class TodoListModel extends ChangeNotifier {
 
   final List<Todo> _todos = [];
 
-  List<Todo> get todos => _todos;
+  List<Todo> get todos => _todos.where((todo) => todo.completed == "").toList();
+  List<Todo> get completedTodos =>
+      _todos.where((todo) => todo.completed != "").toList();
 
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
 
   void _saveTodos() {
-    List<Map<String, dynamic>> todos = [];
-    for (int i = 0; i < _todos.length; i++) {
-      _todos[i].index = i;
-      todos.add(_todos[i].toMap());
+    List<Map<String, dynamic>> toSave = [];
+    for (int i = 0; i < todos.length; i++) {
+      todos[i].index = i;
+      toSave.add(todos[i].toMap());
     }
-    db.saveTodos(todos);
+    for (int i = 0; i < completedTodos.length; i++) {
+      toSave.add(completedTodos[i].toMap());
+    }
+    db.saveTodos(toSave);
   }
 
   void _deleteTodos() {
@@ -74,6 +79,8 @@ class TodoListModel extends ChangeNotifier {
     }
     final todo = todos.where((td) => td.id == id).first;
     todo.completed = DateTime.now().toIso8601String();
+    todos.remove(todo);
+    completedTodos.add(todo);
 
     _saveTodos();
     notifyListeners();

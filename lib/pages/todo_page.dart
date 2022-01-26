@@ -25,17 +25,11 @@ class _TodoPageState extends State<TodoPage> {
               itemBuilder: (context, index) {
                 final todo = todos[index];
 
-                if (todo.completed == '') {
-                  return ListTile(
-                      key: Key(index.toString()),
-                      title: Text(todo.description),
-                      subtitle: Text(todo.added),
-                      onTap: () => widget.complete(todo));
-                } else {
-                  return Container(
+                return ListTile(
                     key: Key(index.toString()),
-                  );
-                }
+                    title: Text(todo.description),
+                    subtitle: Text(todo.added),
+                    onTap: () => widget.complete(todo));
               },
               onReorder: (int oldIndex, int newIndex) =>
                   widget.swap(oldIndex, newIndex));
