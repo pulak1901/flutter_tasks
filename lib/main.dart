@@ -46,17 +46,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _page = 0;
   late HistoryPage historyPage = HistoryPage(delete: _deleteTodo);
-  late TodoPage todoPage;
+  late TodoPage todoPage = TodoPage(
+    complete: _completeTodo,
+    swap: _swapTodo,
+  );
   late TodoListModel _model;
-
-  @override
-  void initState() {
-    super.initState();
-    todoPage = TodoPage(
-      complete: _completeTodo,
-      swap: _swapTodo,
-    );
-  }
 
   _pageSelected(int _index) {
     setState(() {

@@ -5,17 +5,13 @@ import 'package:flutter_tasks/data/todo_list_model.dart';
 import 'package:flutter_tasks/widgets/todo_card.dart';
 import 'package:provider/provider.dart';
 
-class TodoPage extends StatefulWidget {
+class TodoPage extends StatelessWidget {
   final void Function(Todo todo) complete;
   final void Function(int oldIndex, int newIndex) swap;
+
   const TodoPage({Key? key, required this.complete, required this.swap})
       : super(key: key);
 
-  @override
-  State<TodoPage> createState() => _TodoPageState();
-}
-
-class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return Selector<TodoListModel, List<Todo>>(
@@ -29,10 +25,10 @@ class _TodoPageState extends State<TodoPage> {
                 return TodoCard(
                     key: Key(index.toString()),
                     todo: todo,
-                    onTap: (todo) => widget.complete(todo));
+                    onTap: (todo) => complete(todo));
               },
               onReorder: (int oldIndex, int newIndex) =>
-                  widget.swap(oldIndex, newIndex));
+                  swap(oldIndex, newIndex));
         },
         shouldRebuild: (oldTodos, newTodos) => !listEquals(oldTodos, newTodos));
   }
