@@ -4,6 +4,7 @@ import 'package:flutter_tasks/data/todo_db.dart';
 import 'package:flutter_tasks/data/todo_list_model.dart';
 import 'package:flutter_tasks/pages/history_page.dart';
 import 'package:flutter_tasks/pages/todo_page.dart';
+import 'package:flutter_tasks/widgets/add_todo_dialog.dart';
 import 'package:flutter_tasks/widgets/custom_bottom_nav.dart';
 import 'package:provider/provider.dart';
 
@@ -71,12 +72,45 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  _onFabPressed(BuildContext context) {
+    if (_page == 1) {
+    } else {
+      AddTodoDialog.show(context, (value) => _onUserEntered(value));
+    }
+  }
+
+  String _getFabTooltip() {
+    if (_page == 1) {
+      return "Clear history";
+    }
+    return "Add to do";
+  }
+
+  String _getFabLabel() {
+    if (_page == 1) {
+      return "Clear";
+    }
+    return "Add";
+  }
+
+  Widget _getFabIcon() {
+    if (_page == 1) {
+      return const Icon(Icons.delete);
+    }
+
+    return const Icon(Icons.add);
+  }
+
   _completeTodo(Todo todo) {
-    _model.complete(todo.id);
+    _model.complete(todo.id!);
   }
 
   _swapTodo(int oldIndex, int newIndex) {
     _model.swap(oldIndex, newIndex);
+  }
+
+  _onUserEntered(String text) {
+    _model.add(text, 0);
   }
 
   @override
@@ -85,9 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         body: SafeArea(child: _getPage(_page)),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {_model.add("description", 0)},
-          tooltip: 'Add todo',
-          child: const Icon(Icons.add),
+          onPressed: () => _onFabPressed(context),
+          tooltip: _getFabTooltip(),
+          child: _getFabIcon(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: CustomBottomNav(
@@ -95,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selectedColor: Colors.blue,
           iconSize: 28.0,
           height: 64.0,
-          fabLabel: "Add",
+          fabLabel: _getFabLabel(),
           items: [
             CustomNavItem(icon: Icons.list, label: "Todo"),
             CustomNavItem(icon: Icons.stacked_line_chart, label: "History")
