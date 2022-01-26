@@ -69,8 +69,9 @@ class TodoDatabase extends ChangeNotifier {
     }
   }
 
-  void deleteTodos() async {
-    await _db.delete(table, where: null);
-    print("Deleted all Todos!");
+  void deleteTodos(List<Todo> todos) async {
+    for (int i = 0; i < todos.length; i++) {
+      await _db.delete(table, where: 'id = ?', whereArgs: [todos[i].id]);
+    }
   }
 }

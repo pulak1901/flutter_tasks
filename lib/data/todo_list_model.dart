@@ -35,10 +35,6 @@ class TodoListModel extends ChangeNotifier {
     db.saveTodos(toSave);
   }
 
-  void _deleteTodos() {
-    db.deleteTodos();
-  }
-
   Future load() {
     _isLoading = true;
     notifyListeners();
@@ -74,13 +70,18 @@ class TodoListModel extends ChangeNotifier {
   }
 
   void complete(int? id) {
-    if (id == null) {
-      print("wtf");
-    }
     final todo = todos.where((td) => td.id == id).first;
     todo.completed = DateTime.now().toIso8601String();
     todos.remove(todo);
     completedTodos.add(todo);
+
+    _saveTodos();
+    notifyListeners();
+  }
+
+  void deleteCompleted() {
+    _todos.removeWhere((element) => element.completed != '');
+    db.deleteTodos(completedTodos);
 
     _saveTodos();
     notifyListeners();

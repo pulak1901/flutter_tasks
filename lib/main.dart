@@ -74,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _onFabPressed(BuildContext context) {
     if (_page == 1) {
+      _model.deleteCompleted();
     } else {
       AddTodoDialog.show(context, (value) => _onUserEntered(value));
     }
