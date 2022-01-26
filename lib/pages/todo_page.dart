@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tasks/data/todo.dart';
 import 'package:flutter_tasks/data/todo_list_model.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class TodoPage extends StatefulWidget {
   final void Function(Todo todo) complete;
@@ -28,7 +29,8 @@ class _TodoPageState extends State<TodoPage> {
                 return ListTile(
                     key: Key(index.toString()),
                     title: Text(todo.description),
-                    subtitle: Text(todo.added),
+                    subtitle: Text("Created " +
+                        timeago.format(DateTime.parse(todo.added))),
                     onTap: () => widget.complete(todo));
               },
               onReorder: (int oldIndex, int newIndex) =>

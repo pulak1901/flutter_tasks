@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tasks/data/todo.dart';
 import 'package:flutter_tasks/data/todo_list_model.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -18,7 +19,10 @@ class HistoryPage extends StatelessWidget {
             itemBuilder: (context, i) => ListTile(
               key: Key(i.toString()),
               title: Text(todos[i].description),
-              subtitle: Text(todos[i].completed),
+              subtitle: Text("Created " +
+                  timeago.format(DateTime.parse(todos[i].added)) +
+                  ", completed " +
+                  timeago.format(DateTime.parse(todos[i].completed))),
             ),
           );
         });
