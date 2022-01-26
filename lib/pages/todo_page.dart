@@ -34,6 +34,6 @@ class _TodoPageState extends State<TodoPage> {
               onReorder: (int oldIndex, int newIndex) =>
                   widget.swap(oldIndex, newIndex));
         },
-        shouldRebuild: (oldTodos, newTodos) => listEquals(oldTodos, newTodos));
+        shouldRebuild: (oldTodos, newTodos) => !listEquals(oldTodos, newTodos));
   }
 }
