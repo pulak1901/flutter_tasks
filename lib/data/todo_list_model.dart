@@ -86,4 +86,12 @@ class TodoListModel extends ChangeNotifier {
     _saveTodos();
     notifyListeners();
   }
+
+  void delete(Todo todo) {
+    _todos.removeWhere((element) => element.id == todo.id);
+    db.deleteTodos([todo]);
+
+    _saveTodos();
+    notifyListeners();
+  }
 }

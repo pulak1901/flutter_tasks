@@ -45,7 +45,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _page = 0;
-  late HistoryPage historyPage = HistoryPage();
+  late HistoryPage historyPage = HistoryPage(delete: _deleteTodo);
   late TodoPage todoPage;
   late TodoListModel _model;
 
@@ -112,6 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _onUserEntered(String text) {
     _model.add(text, 0);
+  }
+
+  _deleteTodo(Todo todo) {
+    _model.delete(todo);
   }
 
   @override

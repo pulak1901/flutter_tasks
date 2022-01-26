@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tasks/data/todo.dart';
 import 'package:flutter_tasks/data/todo_list_model.dart';
+import 'package:flutter_tasks/widgets/todo_card.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class HistoryPage extends StatelessWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+  final void Function(Todo) delete;
+  const HistoryPage({Key? key, required this.delete}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +16,11 @@ class HistoryPage extends StatelessWidget {
           todos.sort((t1, t2) => DateTime.parse(t2.completed)
               .compareTo(DateTime.parse(t1.completed)));
           return ListView.builder(
-            itemCount: todos.length,
-            itemBuilder: (context, i) => ListTile(
-              key: Key(i.toString()),
-              title: Text(todos[i].description),
-              subtitle: Text("Created " +
-                  timeago.format(DateTime.parse(todos[i].added)) +
-                  ", completed " +
-                  timeago.format(DateTime.parse(todos[i].completed))),
-            ),
-          );
+              itemCount: todos.length,
+              itemBuilder: (context, i) => TodoCard(
+                  key: Key(i.toString()),
+                  todo: todos[i],
+                  onTap: (todo) => delete(todo)));
         });
   }
 }
